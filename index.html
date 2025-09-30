@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bill Generator</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+  <script src="pdfmake.js"></script>
+  <script src="vfs_fonts.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Shop Header -->
+    <div class="shop-header">
+      <img src="logo.png" alt="Shop Logo" class="logo">
+    </div>
+
+    <hr>
+    <div class="shop-details">
+        <p>FSSAI No : <b>11515009000054</b></p>
+        <p>GST No : <b>27AXPBK1016E1Z3</b></p>
+    </div>
+
+    <!-- Bill Info -->
+    <div class="bill-info">
+      <div>
+        <label>Bill No:</label>
+        <input type="text" id="billNo">
+      </div>
+      <div>
+        <label>Date:</label>
+        <input type="date" id="date">
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- Buyer Details -->
+    <div>
+        <h3>Bill To</h3>
+        <label>Buyer GST:</label>
+        <input type="text" id="buyerGST"><br>
+        <label>Buyer Name:</label>
+        <input type="text" id="buyerName"><br>
+        <label>Phone:</label>
+        <input type="text" id="buyerPhone"><br>
+        <label>Address:</label>
+        <textarea id="buyerAddress"></textarea><br><br>
+    </div>
+    
+
+    <!-- Items -->
+    <h3>Items</h3>
+    <div id="items">
+      <div class="item-row">
+        <input type="text" placeholder="Item" class="item">
+        <input type="number" placeholder="Quantity" class="qty">
+        <input type="text" placeholder="Unit (e.g. pc/box/container)" class="unit">
+        <input type="number" placeholder="Rate" class="rate">
+        <button onclick="deleteItem(this)" class="delete-btn">Delete</button>
+      </div>
+    </div>
+
+    <button onclick="addItem()">+ Add Item</button>
+
+    <!-- Extra Charges -->
+    <h3>Additional Charges</h3>
+    <label>Handling Charges:</label>
+    <input type="number" id="handlingCharges" placeholder="0"><br>
+    <label>Shipping Charges:</label>
+    <input type="number" id="shippingCharges" placeholder="0"><br><br>
+
+    <button onclick="generatePDF()">Generate PDF</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
