@@ -92,7 +92,7 @@ function generatePDF() {
     content: [
       {
         stack: [
-          base64Logo ? { image: base64Logo, width: 100, alignment: "center", margin: [0, 0, 0, 10] } : {},
+          base64Logo ? { image: base64Logo, width: 600, alignment: "center", margin: [0, 0, 0, 10] } : {},
           { text: "FSSAI No: 11515009000054    GST No: 27AXPBK1016E1Z3", fontSize: 10, alignment: "center", margin: [0, 2, 0, 10] }
         ]
       },
