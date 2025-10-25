@@ -22,7 +22,8 @@ body {
   
   .logo {
     width: 40%;          
-    width:100%;
+    width: 100%; /* fall back */
+    width: 100vw;
     min-width:100%; 
     height: auto;
   }
