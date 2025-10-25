@@ -1,12 +1,28 @@
 let base64Logo = null;
 
-// Load logo into Base64 on page load
+// Convert image to Base64
+function toDataURL(url, callback) {
+  const xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    const reader = new FileReader();
+    reader.onloadend = function () {
+      callback(reader.result);
+    };
+    reader.readAsDataURL(xhr.response);
+  };
+  xhr.open("GET", url);
+  xhr.responseType = "blob";
+  xhr.send();
+}
+
+// Load logo on page load
 window.onload = function () {
   toDataURL("logo.png", function (base64) {
     base64Logo = base64;
   });
 };
 
+// Add new item row
 function addItem() {
   const div = document.createElement("div");
   div.classList.add("item-row");
@@ -20,11 +36,13 @@ function addItem() {
   document.getElementById("items").appendChild(div);
 }
 
+// Delete item row
 function deleteItem(button) {
   const row = button.parentElement;
   row.remove();
 }
 
+// Generate PDF
 function generatePDF() {
   const billNo = document.getElementById("billNo").value;
   const date = document.getElementById("date").value;
@@ -47,6 +65,7 @@ function generatePDF() {
       { text: "Amount (Rs.)", bold: true, alignment: "center" }
     ]
   ];
+
   let total = 0;
 
   items.forEach((row, index) => {
@@ -56,6 +75,7 @@ function generatePDF() {
     const rate = parseFloat(row.querySelector(".rate").value) || 0;
     const amount = qty * rate;
     total += amount;
+
     if (item) {
       body.push([
         { text: index + 1, alignment: "center" },
@@ -88,17 +108,14 @@ function generatePDF() {
     { text: total.toFixed(2), bold: true, alignment: "right", margin: [0, 5, 5, 5] }
   ]);
 
+  // --- PDF Structure ---
   const docDefinition = {
+    pageMargins: [40, 60, 40, 60],
     content: [
       {
         stack: [
           base64Logo
-            ? {
-                image: base64Logo,
-                width: 0.8 * (595.28 - 2 * 40), // 80% of A4 width minus margins
-                alignment: "center",
-                margin: [0, 0, 0, 10]
-              }
+            ? { image: base64Logo, width: 400, alignment: "center", margin: [0, 0, 0, 10] }
             : {},
           { text: "FSSAI No: 11515009000054    GST No: 27AXPBK1016E1Z3", fontSize: 10, alignment: "center", margin: [0, 2, 0, 10] }
         ]
@@ -161,20 +178,15 @@ function generatePDF() {
     }
   };
 
-  pdfMake.createPdf(docDefinition).download(`${buyerName}Bill_${billNo}.pdf`);
-}
+  // --- Dynamically adjust logo width to 80% of page width ---
+  const pageWidth = pdfMake.pageSize ? pdfMake.pageSize.width : 595.28; // Default A4 width
+  const usableWidth = pageWidth - (docDefinition.pageMargins[0] + docDefinition.pageMargins[2]);
+  const logoWidth = 0.8 * usableWidth;
 
-// Helper: Convert image to Base64
-function toDataURL(url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    var reader = new FileReader();
-    reader.onloadend = function () {
-      callback(reader.result);
-    }
-    reader.readAsDataURL(xhr.response);
-  };
-  xhr.open("GET", url);
-  xhr.responseType = "blob";
-  xhr.send();
+  if (docDefinition.content[0].stack && docDefinition.content[0].stack[0].image) {
+    docDefinition.content[0].stack[0].width = logoWidth;
+  }
+
+  // Generate and download PDF
+  pdfMake.createPdf(docDefinition).download(`${buyerName}Bill_${billNo}.pdf`);
 }
