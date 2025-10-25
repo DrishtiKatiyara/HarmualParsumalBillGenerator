@@ -56,11 +56,6 @@ body {
     font-family: 'Roboto Slab', serif;
   }
   
-  textarea {
-    height: 70px;
-    resize: none;
-  }
-  
   .item-row {
     display: flex;
     gap: 10px;
