@@ -9,72 +9,129 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
   <script src="pdfmake.js"></script>
   <script src="vfs_fonts.js"></script>
+  <script type="module">
+  // Import Firebase SDK
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+  // Your Firebase config (replace with your project values)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Handle login
+  window.login = async function() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      document.getElementById("login-section").style.display = "none";
+      document.getElementById("app-section").style.display = "block";
+    } catch (error) {
+      alert("Invalid credentials!");
+    }
+  };
+
+  // Handle logout
+  window.logout = function() {
+    signOut(auth);
+  };
+
+  // Check auth state
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      document.getElementById("login-section").style.display = "none";
+      document.getElementById("app-section").style.display = "block";
+    } else {
+      document.getElementById("login-section").style.display = "block";
+      document.getElementById("app-section").style.display = "none";
+    }
+  });
+</script>
 </head>
 <body>
-  <div class="container">
-    <!-- Shop Header -->
-    <div class="shop-header">
-      <img src="logo.png" alt="Shop Logo" class="logo">
-    </div>
-
-    <hr>
-    <div class="shop-details">
-        <p>FSSAI No : <b>11515009000054</b></p>
-        <p>GST No : <b>27AXPBK1016E1Z3</b></p>
-    </div>
-
-    <!-- Bill Info -->
-    <div class="bill-info">
-      <div>
-        <label>Bill No:</label>
-        <input type="text" id="billNo">
-      </div>
-      <div>
-        <label>Date:</label>
-        <input type="date" id="date">
-      </div>
-    </div>
-
-    <hr>
-
-    <!-- Buyer Details -->
-    <div>
-        <h3>Bill To</h3>
-        <label>Buyer GST:</label>
-        <input type="text" id="buyerGST"><br>
-        <label>Buyer Name:</label>
-        <input type="text" id="buyerName"><br>
-        <label>Phone:</label>
-        <input type="text" id="buyerPhone"><br>
-        <label>Address:</label>
-        <textarea id="buyerAddress"></textarea><br><br>
-    </div>
-    
-
-    <!-- Items -->
-    <h3>Items</h3>
-    <div id="items">
-      <div class="item-row">
-        <input type="text" placeholder="Item" class="item">
-        <input type="number" placeholder="Quantity" class="qty">
-        <input type="text" placeholder="Unit (e.g. pc/box/container)" class="unit">
-        <input type="number" placeholder="Rate" class="rate">
-        <button onclick="deleteItem(this)" class="delete-btn">Delete</button>
-      </div>
-    </div>
-
-    <button onclick="addItem()">+ Add Item</button>
-
-    <!-- Extra Charges -->
-    <h3>Additional Charges</h3>
-    <label>Handling Charges:</label>
-    <input type="number" id="handlingCharges" placeholder="0"><br>
-    <label>Shipping Charges:</label>
-    <input type="number" id="shippingCharges" placeholder="0"><br><br>
-
-    <button onclick="generatePDF()">Generate PDF</button>
+  <div id="login-section">
+    <h2>Admin Login</h2>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
   </div>
 
-  <script src="script.js"></script>
+  <div id="app-section" style="display:none;">
+    <!-- Your existing billing / PDF code here -->
+    <div class="container">
+      <!-- Shop Header -->
+      <div class="shop-header">
+        <img src="logo.png" alt="Shop Logo" class="logo">
+      </div>
+  
+      <hr>
+      <div class="shop-details">
+          <p>FSSAI No : <b>11515009000054</b></p>
+          <p>GST No : <b>27AXPBK1016E1Z3</b></p>
+      </div>
+  
+      <!-- Bill Info -->
+      <div class="bill-info">
+        <div>
+          <label>Bill No:</label>
+          <input type="text" id="billNo">
+        </div>
+        <div>
+          <label>Date:</label>
+          <input type="date" id="date">
+        </div>
+      </div>
+  
+      <hr>
+  
+      <!-- Buyer Details -->
+      <div>
+          <h3>Bill To</h3>
+          <label>Buyer GST:</label>
+          <input type="text" id="buyerGST"><br>
+          <label>Buyer Name:</label>
+          <input type="text" id="buyerName"><br>
+          <label>Phone:</label>
+          <input type="text" id="buyerPhone"><br>
+          <label>Address:</label>
+          <textarea id="buyerAddress"></textarea><br><br>
+      </div>
+      
+  
+      <!-- Items -->
+      <h3>Items</h3>
+      <div id="items">
+        <div class="item-row">
+          <input type="text" placeholder="Item" class="item">
+          <input type="number" placeholder="Quantity" class="qty">
+          <input type="text" placeholder="Unit (e.g. pc/box/container)" class="unit">
+          <input type="number" placeholder="Rate" class="rate">
+          <button onclick="deleteItem(this)" class="delete-btn">Delete</button>
+        </div>
+      </div>
+  
+      <button onclick="addItem()">+ Add Item</button>
+  
+      <!-- Extra Charges -->
+      <h3>Additional Charges</h3>
+      <label>Handling Charges:</label>
+      <input type="number" id="handlingCharges" placeholder="0"><br>
+      <label>Shipping Charges:</label>
+      <input type="number" id="shippingCharges" placeholder="0"><br><br>
+  
+      <button onclick="generatePDF()">Generate PDF</button>
+    </div>
+  
+    <script src="script.js"></script>
+    <button onclick="logout()">Logout</button>
+  </div>
 </body>
 </html>
