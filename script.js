@@ -93,8 +93,6 @@ function generatePDF() {
       {
         stack: [
           base64Logo ? { image: base64Logo, width: 100, alignment: "center", margin: [0, 0, 0, 10] } : {},
-          { text: "HARUMAL PARSUMAL", style: "header", alignment: "center" },
-          { text: "Masala, Kirana & General Store", fontSize: 11, alignment: "center", italics: true },
           { text: "FSSAI No: 11515009000054    GST No: 27AXPBK1016E1Z3", fontSize: 10, alignment: "center", margin: [0, 2, 0, 10] }
         ]
       },
